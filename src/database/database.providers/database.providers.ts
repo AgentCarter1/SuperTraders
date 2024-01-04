@@ -12,12 +12,12 @@ export const databaseProviders = [
     provide: 'SEQUELIZE',
     useFactory: async () => {
       const sequelize = new Sequelize({
-        dialect: 'postgres', // specifying the dialect
-        host: process.env.POSTGRES_DB_HOST, // database host, e.g., 'localhost'
-        port: parseInt(process.env.POSTGRES_PORT, 10), // database port, e.g., 5432
-        username: process.env.POSTGRES_USER, // database username
-        password: process.env.POSTGRES_PASSWORD, // database password
-        database: process.env.POSTGRES_DB, // database name
+        dialect: 'postgres',
+        host: process.env.POSTGRES_DB_HOST,
+        port: parseInt(process.env.POSTGRES_PORT, 10),
+        username: process.env.POSTGRES_USER,
+        password: process.env.POSTGRES_PASSWORD,
+        database: process.env.POSTGRES_DB,
       });
       sequelize.addModels([
         User,
