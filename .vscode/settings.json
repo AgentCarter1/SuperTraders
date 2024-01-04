@@ -1,0 +1,28 @@
+{
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "eslint.validate": ["javascript"],
+    "json.schemas": [
+      {
+        "fileMatch": ["/package.json"],
+        "url": "https://json.schemastore.org/package",
+        "schema": true
+      },
+      {
+        "fileMatch": ["/tsconfig.json"],
+        "url": "https://json.schemastore.org/tsconfig",
+        "schema": true
+      },
+      {
+        "fileMatch": ["/.prettierrc"],
+        "url": "https://json.schemastore.org/prettierrc",
+        "schema": true
+      },
+    ],
+    "cSpell.words": [
+      "hmset",
+      "uuidv"
+    ],
+    "files.eol": "\n"
+}
