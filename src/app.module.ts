@@ -8,6 +8,7 @@ import { PortfolioService } from './portfolio/portfolio.service';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { PortfolioDetailModule } from './portfolio-detail/portfolio-detail.module';
 import { TransactionModule } from './transaction/transaction.module';
+import { UsersModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TransactionModule } from './transaction/transaction.module';
     PortfolioModule,
     PortfolioDetailModule,
     TransactionModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService, ShareService, PortfolioService],

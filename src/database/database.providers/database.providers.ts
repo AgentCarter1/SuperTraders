@@ -5,8 +5,9 @@ import { Share } from 'src/share/model/share.model';
 import { Portfolio } from 'src/portfolio/model/portfolio.model';
 import { PortfolioDetail } from 'src/portfolio-detail/model/portfolio-detail.model';
 import { Transaction } from 'src/transaction/model/transaction.model';
+import { Logger } from '@nestjs/common';
 dotenv.config();
-
+const logger = new Logger();
 export const databaseProviders = [
   {
     provide: 'SEQUELIZE',
@@ -27,7 +28,7 @@ export const databaseProviders = [
         Transaction,
       ]);
       sequelize.sync({ force: true }).then(() => {
-        console.log('Veritabanı senkronize edildi!');
+        logger.log('Database synchronized');
       });
       return sequelize;
     },
