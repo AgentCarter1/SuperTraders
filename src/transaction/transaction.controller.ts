@@ -8,7 +8,6 @@ import {
   Body,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
-import { Transaction } from './model/transaction.model';
 import { SellDto } from './dto/sell.dto';
 import { BuyDto } from './dto/buy.dto';
 
