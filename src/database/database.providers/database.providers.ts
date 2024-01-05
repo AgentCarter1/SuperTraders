@@ -20,9 +20,10 @@ export const databaseProviders = [
         database: process.env.POSTGRES_DB,
       });
       sequelize.addModels([User, Share, Portfolio, Transaction]);
-      sequelize.sync({ force: true }).then(() => {
-        logger.log('Database synchronized');
-      });
+      // sequelize.sync({ force: true }).then(() => {
+      //   logger.log('Database synchronized');
+      // });
+      sequelize.sync();
       return sequelize;
     },
   },

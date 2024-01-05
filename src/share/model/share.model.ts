@@ -20,6 +20,9 @@ export class Share extends Model {
   @Column(DataType.DECIMAL(5, 2))
   currentPrice: number;
 
+  @Column(DataType.INTEGER)
+  quantity: number;
+
   @HasMany(() => Transaction)
   transactions: Transaction[];
 }

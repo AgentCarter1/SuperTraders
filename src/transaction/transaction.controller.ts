@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
-  Param,
-  Body,
-} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { SellDto } from './dto/sell.dto';
 import { BuyDto } from './dto/buy.dto';

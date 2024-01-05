@@ -20,6 +20,9 @@ export class Portfolio extends Model {
   @Column(DataType.INTEGER)
   portfolioID: number;
 
+  @Column(DataType.DECIMAL(10, 2)) // Örnek olarak balance eklenmişse
+  balance: number;
+
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
   userID: number;
