@@ -1,3 +1,4 @@
+// portfolio.model.ts
 import {
   Table,
   Column,
@@ -9,7 +10,6 @@ import {
   HasMany,
   BelongsTo,
 } from 'sequelize-typescript';
-import { PortfolioDetail } from 'src/portfolio-detail/model/portfolio-detail.model';
 import { Transaction } from 'src/transaction/model/transaction.model';
 import { User } from 'src/user/model/user.model';
 
@@ -26,9 +26,6 @@ export class Portfolio extends Model {
 
   @BelongsTo(() => User)
   user: User;
-
-  @HasMany(() => PortfolioDetail)
-  portfolioDetails: PortfolioDetail[];
 
   @HasMany(() => Transaction)
   transactions: Transaction[];

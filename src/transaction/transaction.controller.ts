@@ -9,38 +9,20 @@ import {
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { Transaction } from './model/transaction.model';
+import { SellDto } from './dto/sell.dto';
+import { BuyDto } from './dto/buy.dto';
 
 @Controller('transactions')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @Post()
-  async create(
-    @Body() transactionData: Partial<Transaction>,
-  ): Promise<Transaction> {
-    return this.transactionService.create(transactionData);
+  @Post('buy')
+  async buyShares(@Body() buyDto: BuyDto) {
+    return this.transactionService.buyShares(buyDto);
   }
 
-  @Get(':id')
-  async findOneById(@Param('id') id: number): Promise<Transaction | null> {
-    return this.transactionService.findOneById(id);
-  }
-
-  @Get()
-  async findAll(): Promise<Transaction[]> {
-    return this.transactionService.findAll();
-  }
-
-  @Put(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() transactionData: Partial<Transaction>,
-  ): Promise<number> {
-    return this.transactionService.update(id, transactionData);
-  }
-
-  @Delete(':id')
-  async remove(@Param('id') id: number): Promise<number> {
-    return this.transactionService.remove(id);
+  @Post('sell')
+  async sellShares(@Body() sellDto: SellDto) {
+    return this.transactionService.sellShares(sellDto);
   }
 }

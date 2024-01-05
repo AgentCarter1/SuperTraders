@@ -6,7 +6,6 @@ import { ShareService } from './share/share.service';
 import { ShareModule } from './share/share.module';
 import { PortfolioService } from './portfolio/portfolio.service';
 import { PortfolioModule } from './portfolio/portfolio.module';
-import { PortfolioDetailModule } from './portfolio-detail/portfolio-detail.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { UsersModule } from './user/user.module';
 
@@ -15,7 +14,6 @@ import { UsersModule } from './user/user.module';
     DatabaseModule,
     ShareModule,
     PortfolioModule,
-    PortfolioDetailModule,
     TransactionModule,
     UsersModule,
   ],
