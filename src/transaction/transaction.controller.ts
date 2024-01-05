@@ -1,16 +1,46 @@
-import { Controller, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+} from '@nestjs/common';
 import { TransactionService } from './transaction.service';
+import { Transaction } from './model/transaction.model';
 
-@Controller('transaction')
+@Controller('transactions')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @Post('buy-share')
-  async buyShare() {
-    return this.transactionService.buyShare();
+  @Post()
+  async create(
+    @Body() transactionData: Partial<Transaction>,
+  ): Promise<Transaction> {
+    return this.transactionService.create(transactionData);
   }
-  @Post('sell-share')
-  async sellShare() {
-    return this.transactionService.sellShare();
+
+  @Get(':id')
+  async findOneById(@Param('id') id: number): Promise<Transaction | null> {
+    return this.transactionService.findOneById(id);
+  }
+
+  @Get()
+  async findAll(): Promise<Transaction[]> {
+    return this.transactionService.findAll();
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() transactionData: Partial<Transaction>,
+  ): Promise<number> {
+    return this.transactionService.update(id, transactionData);
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: number): Promise<number> {
+    return this.transactionService.remove(id);
   }
 }
