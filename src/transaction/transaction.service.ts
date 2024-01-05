@@ -16,6 +16,24 @@ export class TransactionService {
     private shareRepository: typeof Share,
   ) {}
 
+  async calculateTotalShares(
+    symbol: string,
+    portfolioID: number,
+  ): Promise<number> {
+    const buyTransactions = await this.transactionRepository.findAll({
+      where: { portfolioID, symbol, type: 'BUY' },
+    });
+
+    const sellTransactions = await this.transactionRepository.findAll({
+      where: { portfolioID, symbol, type: 'SELL' },
+    });
+
+    const totalBought = buyTransactions.reduce((sum, t) => sum + t.quantity, 0);
+    const totalSold = sellTransactions.reduce((sum, t) => sum + t.quantity, 0);
+
+    return totalBought - totalSold;
+  }
+
   async buyShares(buyDto: BuyDto) {
     const { userId, symbol, quantity } = buyDto;
     // Retrieve user's portfolio
@@ -76,30 +94,16 @@ export class TransactionService {
     const portfolio = await this.portfolioRepository.findOne({
       where: { userID: userId },
     });
-
-    if (!portfolio) {
-      throw new Error('Portfolio not registered');
-    }
+    if (!portfolio) throw new Error('Portfolio not registered');
 
     // Retrieve the share based on the symbol
-    const share = await this.shareRepository.findOne({
-      where: { symbol },
-    });
-
-    if (!share) {
-      throw new Error('Share not registered');
-    }
-
-    // Check if the user's portfolio has enough shares to sell
-    const portfolioShares = await this.transactionRepository.findAll({
-      where: { portfolioID: portfolio.portfolioID, symbol, type: 'BUY' },
-      attributes: ['quantity'],
-    });
+    const share = await this.shareRepository.findOne({ where: { symbol } });
+    if (!share) throw new Error('Share not registered');
 
     // Calculate total shares owned by the user
-    const totalSharesOwned = portfolioShares.reduce(
-      (total, transaction) => total + transaction.quantity,
-      0,
+    const totalSharesOwned = await this.calculateTotalShares(
+      symbol,
+      portfolio.portfolioID,
     );
 
     // Check if there are enough shares to sell
@@ -108,28 +112,27 @@ export class TransactionService {
     }
 
     const totalRevenue = share.currentPrice * quantity;
+    const newBalance = Number(portfolio.balance) + totalRevenue;
 
-    const newBalance = Number(portfolio.balance) + Number(totalRevenue);
-
-    // Sayısal türdeki yeni bakiyeyi güncelleyin
+    // Update user's portfolio balance
     await this.portfolioRepository.update(
       { balance: newBalance },
       { where: { portfolioID: portfolio.portfolioID } },
     );
+
     // Create a new transaction for selling
-    const transactionInstance = this.transactionRepository.build({
+    const transactionInstance = await this.transactionRepository.create({
       portfolioID: portfolio.portfolioID,
-      symbol: share.symbol,
+      symbol,
       type: 'SELL',
       quantity,
       price: share.currentPrice,
       dateTime: new Date(),
     });
 
-    // Save the sell transaction
-    await transactionInstance.save();
-
     // Update the share quantity in the database
+    // This assumes that the 'quantity' in the Shares table represents the total available shares in the market
+    // If it represents the company's shares, then this step is not necessary
     await share.update({ quantity: share.quantity + quantity });
 
     return transactionInstance;
