@@ -1,4 +1,3 @@
-// portfolio.model.ts
 import {
   Table,
   Column,
@@ -20,7 +19,7 @@ export class Portfolio extends Model {
   @Column(DataType.INTEGER)
   portfolioID: number;
 
-  @Column(DataType.DECIMAL(10, 2)) // Örnek olarak balance eklenmişse
+  @Column(DataType.DECIMAL(10, 2))
   balance: number;
 
   @ForeignKey(() => User)
