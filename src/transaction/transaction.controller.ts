@@ -1,16 +1,21 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
+import { SellDto } from './dto/sell.dto';
+import { BuyDto } from './dto/buy.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('transaction')
+@ApiTags('Transactions')
+@Controller('transactions')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @Post('buy-share')
-  async buyShare() {
-    return this.transactionService.buyShare();
+  @Post('buy')
+  async buyShares(@Body() buyDto: BuyDto) {
+    return this.transactionService.buyShares(buyDto);
   }
-  @Post('sell-share')
-  async sellShare() {
-    return this.transactionService.sellShare();
+
+  @Post('sell')
+  async sellShares(@Body() sellDto: SellDto) {
+    return this.transactionService.sellShares(sellDto);
   }
 }

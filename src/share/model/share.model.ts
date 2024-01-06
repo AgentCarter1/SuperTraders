@@ -6,7 +6,6 @@ import {
   DataType,
   HasMany,
 } from 'sequelize-typescript';
-import { PortfolioDetail } from 'src/portfolio-detail/model/portfolio-detail.model';
 import { Transaction } from 'src/transaction/model/transaction.model';
 
 @Table
@@ -21,8 +20,8 @@ export class Share extends Model {
   @Column(DataType.DECIMAL(5, 2))
   currentPrice: number;
 
-  @HasMany(() => PortfolioDetail)
-  portfolioDetails: PortfolioDetail[];
+  @Column(DataType.INTEGER)
+  quantity: number;
 
   @HasMany(() => Transaction)
   transactions: Transaction[];
