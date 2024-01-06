@@ -16,6 +16,7 @@ export const databaseProviders = [
         username: process.env.POSTGRES_USER,
         password: process.env.POSTGRES_PASSWORD,
         database: process.env.POSTGRES_DB,
+        logging: false,
       });
       sequelize.addModels([User, Share, Portfolio, Transaction]);
       // sequelize.sync({ force: true }).then(() => {
