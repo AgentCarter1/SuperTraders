@@ -20,6 +20,7 @@ export class ShareService {
       quantity,
     });
   }
+
   // Return All Shares
   public async findAllShares(): Promise<Share[]> {
     return this.shareRepository.findAll<Share>();
