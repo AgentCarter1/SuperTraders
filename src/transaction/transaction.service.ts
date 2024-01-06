@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, HttpException, HttpStatus } from '@nestjs/common';
 import { Transaction } from './model/transaction.model';
 import { BuyDto } from './dto/buy.dto';
 import { SellDto } from './dto/sell.dto';
@@ -16,125 +16,129 @@ export class TransactionService {
     private shareRepository: typeof Share,
   ) {}
 
-  async calculateTotalShares(
+  // Calculate the total shares owned by a user for a given share symbol
+  private async calculateTotalShares(
     symbol: string,
     portfolioID: number,
   ): Promise<number> {
-    const buyTransactions = await this.transactionRepository.findAll({
-      where: { portfolioID, symbol, type: 'BUY' },
-    });
-
-    const sellTransactions = await this.transactionRepository.findAll({
-      where: { portfolioID, symbol, type: 'SELL' },
-    });
-
-    const totalBought = buyTransactions.reduce((sum, t) => sum + t.quantity, 0);
-    const totalSold = sellTransactions.reduce((sum, t) => sum + t.quantity, 0);
-
+    const totalBought = await this.getTotalTransactionQuantity(
+      portfolioID,
+      symbol,
+      'BUY',
+    );
+    const totalSold = await this.getTotalTransactionQuantity(
+      portfolioID,
+      symbol,
+      'SELL',
+    );
     return totalBought - totalSold;
   }
 
-  async buyShares(buyDto: BuyDto) {
+  // Helper method to get total transaction quantity for a specific type (BUY/SELL)
+  private async getTotalTransactionQuantity(
+    portfolioID: number,
+    symbol: string,
+    type: string,
+  ): Promise<number> {
+    const transactions = await this.transactionRepository.findAll({
+      where: { portfolioID, symbol, type },
+      attributes: ['quantity'],
+    });
+    return transactions.reduce(
+      (sum, transaction) => sum + transaction.quantity,
+      0,
+    );
+  }
+
+  // Method to handle buying shares
+  public async buyShares(buyDto: BuyDto): Promise<Transaction> {
     const { userId, symbol, quantity } = buyDto;
-    // Retrieve user's portfolio
+
     const portfolio = await this.portfolioRepository.findOne({
       where: { userID: userId },
     });
-    //console.log(portfolio);
+    if (!portfolio)
+      throw new HttpException('Portfolio not registered', HttpStatus.NOT_FOUND);
 
-    // Retrieve the share based on the symbol
-    const share = await this.shareRepository.findOne({
-      where: { symbol },
-    });
-
-    //console.log('SHAREEEEEEEE:', share);
-
-    if (!share || share.quantity < quantity) {
-      throw new Error('Share not available or quantity too high');
-    }
+    const share = await this.shareRepository.findOne({ where: { symbol } });
+    if (!share || share.quantity < quantity)
+      throw new HttpException(
+        'Share not available or quantity too high',
+        HttpStatus.BAD_REQUEST,
+      );
 
     const totalCost = share.currentPrice * quantity;
-
-    console.log(totalCost);
-    console.log(portfolio.balance);
-
-    if (portfolio.balance < totalCost) {
-      throw new Error('Insufficient funds');
-    }
+    if (portfolio.balance < totalCost)
+      throw new HttpException('Insufficient funds', HttpStatus.BAD_REQUEST);
 
     await this.portfolioRepository.update(
       { balance: portfolio.balance - totalCost },
       { where: { portfolioID: portfolio.portfolioID } },
     );
-    console.log(portfolio.portfolioID);
 
-    // Create a new transaction
-    const transactionInstance = this.transactionRepository.build({
-      portfolioID: portfolio.portfolioID,
-      symbol: share.symbol,
-      type: 'BUY',
+    return this.createTransaction(
+      portfolio.portfolioID,
+      'BUY',
+      symbol,
       quantity,
-      price: share.currentPrice,
-      dateTime: new Date(),
-    });
-
-    // Save the transaction
-    await transactionInstance.save();
-
-    // Update the share quantity
-    await share.update({ quantity: share.quantity - quantity });
-
-    // return transactionInstance;
+      share.currentPrice,
+    );
   }
 
-  async sellShares(sellDto: SellDto) {
+  // Method to handle selling shares
+  public async sellShares(sellDto: SellDto): Promise<Transaction> {
     const { userId, symbol, quantity } = sellDto;
 
-    // Retrieve user's portfolio
     const portfolio = await this.portfolioRepository.findOne({
       where: { userID: userId },
     });
-    if (!portfolio) throw new Error('Portfolio not registered');
+    if (!portfolio)
+      throw new HttpException('Portfolio not registered', HttpStatus.NOT_FOUND);
 
-    // Retrieve the share based on the symbol
     const share = await this.shareRepository.findOne({ where: { symbol } });
-    if (!share) throw new Error('Share not registered');
+    if (!share)
+      throw new HttpException('Share not registered', HttpStatus.NOT_FOUND);
 
-    // Calculate total shares owned by the user
     const totalSharesOwned = await this.calculateTotalShares(
       symbol,
       portfolio.portfolioID,
     );
-
-    // Check if there are enough shares to sell
-    if (totalSharesOwned < quantity) {
-      throw new Error('Not enough shares to sell');
-    }
+    if (totalSharesOwned < quantity)
+      throw new HttpException(
+        'Not enough shares to sell',
+        HttpStatus.BAD_REQUEST,
+      );
 
     const totalRevenue = share.currentPrice * quantity;
-    const newBalance = Number(portfolio.balance) + totalRevenue;
-
-    // Update user's portfolio balance
     await this.portfolioRepository.update(
-      { balance: newBalance },
+      { balance: Number(portfolio.balance) + totalRevenue },
       { where: { portfolioID: portfolio.portfolioID } },
     );
 
-    // Create a new transaction for selling
-    const transactionInstance = await this.transactionRepository.create({
-      portfolioID: portfolio.portfolioID,
+    return this.createTransaction(
+      portfolio.portfolioID,
+      'SELL',
       symbol,
-      type: 'SELL',
       quantity,
-      price: share.currentPrice,
+      share.currentPrice,
+    );
+  }
+
+  // Helper method to create a transaction
+  private async createTransaction(
+    portfolioID: number,
+    type: string,
+    symbol: string,
+    quantity: number,
+    price: number,
+  ): Promise<Transaction> {
+    return this.transactionRepository.create({
+      portfolioID,
+      symbol,
+      type,
+      quantity,
+      price,
       dateTime: new Date(),
     });
-
-    // Update the share quantity in the database
-    // This assumes that the 'quantity' in the Shares table represents the total available shares in the market
-    // If it represents the company's shares, then this step is not necessary
-    await share.update({ quantity: share.quantity + quantity });
-
-    return transactionInstance;
   }
 }
