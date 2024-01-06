@@ -6,20 +6,13 @@ import { Transaction } from 'src/transaction/model/transaction.model';
 import { seedUsers } from 'src/user/user.seeder';
 import { seedShares } from 'src/share/share.seeder';
 import { seedPortfolios } from 'src/portfolio/portfolio.seeder';
+import { ConfigService } from '@nestjs/config';
 
 export const databaseProviders = [
   {
     provide: 'SEQUELIZE',
-    useFactory: async () => {
-      const sequelize = new Sequelize({
-        dialect: 'postgres',
-        host: process.env.POSTGRES_DB_HOST,
-        port: parseInt(process.env.POSTGRES_PORT, 10),
-        username: process.env.POSTGRES_USER,
-        password: process.env.POSTGRES_PASSWORD,
-        database: process.env.POSTGRES_DB,
-        logging: false,
-      });
+    useFactory: async (configService: ConfigService) => {
+      const sequelize = new Sequelize(configService.get<string>('postgreDb'));
       sequelize.addModels([User, Share, Portfolio, Transaction]);
       sequelize.sync({ force: true }).then(() => {
         seedUsers();
@@ -28,5 +21,6 @@ export const databaseProviders = [
       });
       return sequelize;
     },
+    inject: [ConfigService],
   },
 ];
