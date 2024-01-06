@@ -1,0 +1,281 @@
+{
+	"info": {
+		"_postman_id": "7f9ea2f1-66d2-4b6c-bb93-c2c1698e7952",
+		"name": "Super Traders",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29653002"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"test1\",\n  \"email\": \"test1@example.com\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/user/create",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/user/1",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/user",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By Id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"updated@example.com\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/user/1",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/user/1",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "Buy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"symbol\": \"BTC\",\n  \"quantity\": 15\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/transactions/BUY",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"transactions",
+								"BUY"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sell",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"symbol\": \"BTC\",\n  \"quantity\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/transactions/sell",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"transactions",
+								"sell"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Share",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"symbol\": \"XRP\",\n  \"name\": \"Ripple\",\n  \"currentPrice\": 16.87,\n  \"quantity\": 10000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/shares/create",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"shares",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/shares/get-all",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"shares",
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Portfolio",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userID\": 1,\n  \"balance\": 20000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}/portfolio/create",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"portfolio",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}/portfolio/1",
+							"host": [
+								"{{localhost}}"
+							],
+							"path": [
+								"portfolio",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
