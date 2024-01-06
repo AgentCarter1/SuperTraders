@@ -1,11 +1,17 @@
-import { IsString, IsEmail, IsOptional } from 'class-validator';
+import { IsString, IsEmail, IsArray } from 'class-validator';
 
-export class UpdateUserDto {
-  @IsOptional()
+export class CreateUserDto {
   @IsString()
-  name?: string;
+  name: string;
 
-  @IsOptional()
   @IsEmail()
-  email?: string;
+  email: string;
+
+  @IsArray()
+  portfolios: PortfolioDto[];
+}
+
+export class PortfolioDto {
+  @IsString()
+  name: string;
 }
