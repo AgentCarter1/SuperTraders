@@ -20,19 +20,11 @@ export class PortfolioService {
   public async createPortfolio(
     createPortfolioDto: CreatePortfolioDto,
   ): Promise<Portfolio> {
-    const newPortfolio = new Portfolio({
-      userID: createPortfolioDto.userID,
-      balance: createPortfolioDto.balance,
+    const { userID, balance } = createPortfolioDto;
+    return this.portfolioRepository.create<Portfolio>({
+      userID,
+      balance,
     });
-
-    try {
-      return await newPortfolio.save();
-    } catch (error) {
-      throw new HttpException(
-        'Failed to create portfolio',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
   }
 
   // Public method to get the portfolio details for a user by their user ID.
