@@ -4,9 +4,7 @@ import * as dotenv from 'dotenv';
 import { Share } from 'src/share/model/share.model';
 import { Portfolio } from 'src/portfolio/model/portfolio.model';
 import { Transaction } from 'src/transaction/model/transaction.model';
-import { Logger } from '@nestjs/common';
 dotenv.config();
-const logger = new Logger();
 export const databaseProviders = [
   {
     provide: 'SEQUELIZE',
